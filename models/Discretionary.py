@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List
+from typing import List, Dict
 
 
 # Матрица доступа, где хранятся все возможные виды прав
@@ -65,7 +65,68 @@ class Rights:
                 ret_str += right.value + '\n'
             return ret_str
 
+class Object:
+    def __init__(self, _name: str):
+        self.__name = _name
+
+    def __str__(self):
+        return self.__name
+
+
+class UserRole(Enum):
+    User = 'Обычный пользователь'
+    Admin = 'Администратор'
+
+class User:
+    def __init__(self, _name: str,
+                 _password: str,
+                 _role: UserRole,
+                 _obj: List[Object],
+                 _rights: List[Rights]):
+        self.__name = _name
+        self.__password = _password
+        self.__role = _role
+        self.__rights = self.__create_obj_rights_dict(_obj, _rights)
+
+    def __create_obj_rights_dict(self, obj_list: List[Object], rights_list: List[Rights]) -> Dict[Object, Rights]:
+        if len(obj_list) != len(rights_list):
+            raise ValueError('Списки объектов и прав должны быть одинаковой длины!')
+        result = {}
+        for obj, right in zip(obj_list, rights_list):
+            result[obj] = right if self.__role==UserRole.User else Rights(AccessStatus.ALL_ACCESS)
+        return result
+
+    @property
+    def name(self):
+        return self.__name
+
+    @property
+    def password(self):
+        _password = ''
+        for i in self.__password:
+            _password += '*'
+        return _password
+
+    @property
+    def role(self):
+        return self.__role.value
+
+    @property
+    def rights(self):
+        return self.__rights
+
+    def __str__(self):
+        result = '\n' + 'Имя: ' + self.name + '\n'
+        result += 'Пароль: ' + self.password + '\n'
+        result += 'Роль: ' + self.role + '\n'
+        return result
+
 
 if __name__ == '__main__':
     r = Rights(AccessStatus.PARTIAL_ACCESS, [AccessMatrix.READ, AccessMatrix.WRITE])
-    print(r)
+    objects = [Object('Obj1'), Object('Obj2'), Object('Obj3')]
+    rights = [Rights(AccessStatus.TOTAL_BAN), Rights(AccessStatus.TOTAL_BAN), Rights(AccessStatus.TOTAL_BAN)]
+    user = User('name1', 'pas', UserRole.User, objects, rights)
+    print('User: ', user)
+    admin = User('name2', 'password', UserRole.Admin, objects, rights)
+    print('Admin: ', admin)
