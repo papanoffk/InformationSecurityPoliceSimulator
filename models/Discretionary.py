@@ -163,6 +163,10 @@ class Discretionary:
 
         return User(f'User-{index}', 'admin', UserRole.User, self.__objects, _rights)
 
+    @property
+    def users(self):
+        return self.__users
+
     def __str__(self):
         user_column = 24
         column = 36
