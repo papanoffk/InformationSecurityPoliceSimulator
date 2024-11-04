@@ -63,6 +63,10 @@ class Rights:
         self.__rights = []
         self.__status = AccessStatus.TOTAL_BAN
 
+    @property
+    def rights(self) -> List[AccessMatrix]:
+        return self.__rights
+
     def __str__(self):
         if self.__status in [AccessStatus.ALL_ACCESS, AccessStatus.TOTAL_BAN]:
             return self.__status.value
@@ -167,8 +171,12 @@ class Discretionary:
         return User(f'User-{index}', 'admin', UserRole.User, self.__objects, _rights)
 
     @property
-    def users(self):
+    def users(self) -> List[User]:
         return self.__users
+
+    @property
+    def objects(self) -> List[Object]:
+        return self.__objects
 
     def __str__(self):
         user_column = 24
