@@ -1,4 +1,5 @@
 from enum import Enum
+from random import choice
 
 # Уровни доступа
 class SecurityAttributes(Enum):
@@ -57,9 +58,32 @@ def can_user_access_to(_user: User, _obj: Object) -> bool:
         if obj_security_lvl == lvl:
             return True
 
+# Класс, реализующий мандатную модель
+class Mandatory:
+    def __init__(self, user_count: int, obj_count: int):
+        self.__users = [User(f'User-{i}', 'admin', choice(tuple(SecurityAttributes))) for i in range(user_count)]
+        self.__objs = [Object(f'Object-{i}', choice(tuple(SecurityAttributes))) for i in range(obj_count)]
 
+    @property
+    def users(self):
+        return self.__users
+
+    @property
+    def objects(self):
+        return  self.__objs
+
+    def __str__(self):
+        result = 'Пользователи: \n'
+        for user in self.__users:
+            result += str(user) + ': ' + user.security_level.value + '\n'
+        result += 'Объекты \n'
+        for obj in self.__objs:
+            result += str(obj) + ': ' + obj.security_level.value + '\n'
+
+        return result
 
 if __name__ == '__main__':
     some_obj = Object('Obj', SecurityAttributes.LEVEL_0)
     some_user = User('User', 'Admin', SecurityAttributes.LEVEL_2)
-    print(can_user_access_to(some_user, some_obj))
+    some_mandatory = Mandatory(7, 4)
+    print(some_mandatory)
