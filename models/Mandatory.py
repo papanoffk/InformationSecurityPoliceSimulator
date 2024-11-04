@@ -43,6 +43,9 @@ class User:
     def password(self):
         return '*' * len(self.__password)
 
+    def check_password(self, password):
+        return password == self.__password
+
     def __str__(self):
         return self.__name
 
@@ -73,7 +76,7 @@ class Mandatory:
         return  self.__objs
 
     def __str__(self):
-        result = 'Пользователи: \n'
+        result = '\nПользователи: \n'
         for user in self.__users:
             result += str(user) + ': ' + user.security_level.value + '\n'
         result += 'Объекты \n'

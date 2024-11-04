@@ -129,6 +129,9 @@ class User:
     def rights(self):
         return self.__rights
 
+    def check_password(self, password):
+        return password == self.__password
+
     def __str__(self):
         result = '\n' + 'Имя: ' + self.name + '\n'
         result += 'Пароль: ' + self.password + '\n'
